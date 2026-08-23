@@ -6,7 +6,13 @@ dynamic improvement suggestions — all generated from the document's actual
 content, never hardcoded.
 
 Built as a technical assessment for a Software Engineering role.
-Link - https://document-summarizer-neon.vercel.app/
+
+## Live Demo & Deployment Links
+
+- 🌐 **Frontend (Live App):** [https://document-summarizer-neon.vercel.app/](https://document-summarizer-neon.vercel.app/)
+- ⚙️ **Backend API (Render):** [https://document-summarizer-backend-9llx.onrender.com](https://document-summarizer-backend-9llx.onrender.com)
+- 📖 **Interactive API Documentation:** [https://document-summarizer-backend-9llx.onrender.com/docs](https://document-summarizer-backend-9llx.onrender.com/docs)
+- 🩺 **API Health Endpoint:** [https://document-summarizer-backend-9llx.onrender.com/api/health](https://document-summarizer-backend-9llx.onrender.com/api/health)
 
 ## Overview
 
@@ -349,30 +355,34 @@ paths well:
 
 ## Deployment
 
-Not deployed - the instructions below are for whoever runs this.
+The application is deployed across **Vercel** (Frontend) and **Render** (Backend):
 
-**Frontend (Vercel or Netlify):** build with `npm run build` in `frontend/`,
-publish the `dist/` folder, and set `VITE_API_BASE_URL` to the deployed
-backend's URL as a build-time environment variable.
+### 1. Frontend (Vercel)
+- **Live URL:** [https://document-summarizer-neon.vercel.app/](https://document-summarizer-neon.vercel.app/)
+- **Configuration:**
+  - **Framework Preset:** `Vite`
+  - **Root Directory:** `frontend`
+  - **Build Command:** `npm run build`
+  - **Output Directory:** `dist`
+  - **Environment Variables:**
+    - `VITE_API_BASE_URL`: `https://document-summarizer-backend-9llx.onrender.com`
 
-**Backend:** needs a host that can install the Tesseract system package,
-which rules out most pure-serverless functions. Render, Railway, or Fly.io
-(via [`backend/Dockerfile`](backend/Dockerfile)) all work:
+### 2. Backend (Render Web Service with Docker)
+- **Live URL:** [https://document-summarizer-backend-9llx.onrender.com](https://document-summarizer-backend-9llx.onrender.com)
+- Built using the containerized environment in [`backend/Dockerfile`](backend/Dockerfile) (`python:3.11-slim` with `tesseract-ocr` system package installed).
+- **Environment Variables configured on Render:**
+  - `AI_API_KEY`: Groq API Key
+  - `AI_MODEL`: `openai/gpt-oss-120b`
+  - `AI_PROVIDER`: `groq`
+  - `ENVIRONMENT`: `production`
+  - `CORS_ALLOW_ORIGINS`: `https://document-summarizer-neon.vercel.app`
 
+#### Running Backend with Docker Locally:
 ```bash
 cd backend
 docker build -t document-summary-backend .
 docker run -p 8000:8000 --env-file .env document-summary-backend
 ```
-
-> Docker wasn't available in the environment this was built in, so the
-> image above hasn't actually been built and run - it follows the standard,
-> well-established pattern for a slim Python + apt-get setup, but verify it
-> builds cleanly before relying on it.
-
-Set the environment variables from the table above on the host, especially
-`AI_API_KEY` and `CORS_ALLOW_ORIGINS` (must include the deployed frontend's
-origin, or the browser will block requests).
 
 ## Error Handling
 
